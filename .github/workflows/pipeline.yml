@@ -121,23 +121,19 @@ jobs:
               git push origin update-production-${{ github.run_number }}
             fi
           shell: /usr/bin/bash -e {0}
-  jobs:
-  create_pull_request:
-        needs: [ deploy-to-production ]
-        runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v4
 
-          - name: Create Pull Request
-            run: |
-              version=$(grep 'tag:' values_staging.yml | awk '{print $2}')
-              sed -i "s/tag: .*/tag: $version/" values_production.yml
-              git config --global user.email "denis.roos@wiss-edu.ch"  # Replace with your email
-              git config --global user.name "denis08090"  # Replace with your name
-              git add values_production.yml
-              git commit -m "Update production image to $version"
-              git push origin main
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  create_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: update-production-${{ github.run_number }}
+          title: "Update production image"
+          body: "This PR updates the production image."
+          commit-message: "Update production image"
+          labels: "automated"
