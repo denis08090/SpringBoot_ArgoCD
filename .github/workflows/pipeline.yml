@@ -117,7 +117,6 @@ jobs:
         - name: Create a new branch for PR
           run: |
             git checkout -b update-production-${{ github.run_number }}
-            
 
         - name: Update image tag with version from staging in production values.yml
           run: |
