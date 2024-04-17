@@ -111,8 +111,15 @@ jobs:
         git config --global user.email "denis.roos@wiss-edu.ch"  # Replace with your email
         git config --global user.name "denis08090"  # Replace with your name
         git add values_production.yml
-        git commit -m "Update production image to $version"
-        git push origin update-production-${{ github.run_number }}
+    
+        # Check if there are changes to commit
+        if git diff --cached --exit-code; then
+          echo "No changes to commit."
+        else
+          git commit -m "Update production image to $version"
+          git push origin update-production-${{ github.run_number }}
+        fi
+      shell: /usr/bin/bash -e {0}
 
     - name: Create pull request
       uses: repo-sync/pull-request@v2
