@@ -1,12 +1,12 @@
 name: CI/CD Pipeline
-#
+
 on:
   push:
     branches-ignore:
-      - 'main'
+      - main
   pull_request:
     branches:
-      - 'main'
+      - main
 
 jobs:
   run-unit-and-integration-tests:
