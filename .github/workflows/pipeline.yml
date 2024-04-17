@@ -90,6 +90,17 @@ jobs:
           # Example:
           # newman run collection.json -e environment.json
 
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: update-production-${{ github.run_number }}
+          title: "Update production image"
+          body: "This PR updates the production image."
+          commit-message: "Update production image"
+          labels: "automated"
+
+
   deploy-to-production:
       runs-on: ubuntu-latest
       if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
@@ -128,12 +139,3 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create Pull Request
-        uses: update-production-${{ github.run_number }
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: update-production-${{ github.run_number }}
-          title: "Update production image"
-          body: "This PR updates the production image."
-          commit-message: "Update production image"
-          labels: "automated"
