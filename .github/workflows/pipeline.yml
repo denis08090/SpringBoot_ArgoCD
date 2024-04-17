@@ -103,7 +103,7 @@ jobs:
           labels: "automated"
 
   deploy-to-production:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
         - name: Checkout GitOps repository
