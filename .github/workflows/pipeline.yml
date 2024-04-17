@@ -121,8 +121,8 @@ jobs:
               git push origin update-production-${{ github.run_number }}
             fi
           shell: /usr/bin/bash -e {0}
-
-      create_pull_request:
+  jobs:
+  create_pull_request:
         needs: [ deploy-to-production ]
         runs-on: ubuntu-latest
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
