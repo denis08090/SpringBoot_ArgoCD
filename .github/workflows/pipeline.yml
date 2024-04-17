@@ -87,11 +87,12 @@ jobs:
         run: |
           # Add the execution of further tests here 
           # You may use Newman for system testing
+          # You may use Newman for system testing
           # Example:
           # newman run collection.json -e environment.json
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: denis08090/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-production-${{ github.run_number }}
