@@ -93,7 +93,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
           branch: "update-production-${{ github.run_id }}"
