@@ -93,22 +93,32 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout GitOps repository
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.actor }}/ArgoCD_GitOps
-          token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
-          ref: main
+    - name: Checkout GitOps repository
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.actor }}/ArgoCD_GitOps
+        token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
+        ref: main
 
-      - name: Update image tag with version from staging in production values.yml
-        run: |
-          version=$(grep 'tag:' values_staging.yml | awk '{print $2}')
-          sed -i "s/tag: .*/tag: $version/" values_production.yml
+    - name: Create a new branch for PR
+      run: |
+        git checkout -b update-production-${{ github.run_number }}
 
-      - name: Commit and push changes to GitOps repository
-        run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
-          git add values_production.yml
-          git commit --allow-empty -m "Deploy $version to production"
-          git push
+    - name: Update image tag with version from staging in production values.yml
+      run: |
+        version=$(grep 'tag:' values_staging.yml | awk '{print $2}')
+        sed -i "s/tag: .*/tag: $version/" values_production.yml
+        git config --global user.email "denis.roos@wiss-edu.ch"  # Replace with your email
+        git config --global user.name "denis08090"  # Replace with your name
+        git add values_production.yml
+        git commit -m "Update production image to $version"
+        git push origin update-production-${{ github.run_number }}
+
+    - name: Create pull request
+      uses: repo-sync/pull-request@v2
+      with:
+        github_token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
+        pr_title: "Deploy $version to production"
+        pr_body: "This PR updates the production image to version $version. Please review the changes and merge them to deploy to production."
+        destination_branch: "main"
+        source_branch: "update-production-${{ github.run_number }}"
