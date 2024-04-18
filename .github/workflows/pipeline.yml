@@ -147,4 +147,4 @@ jobs:
           run: npm install -g newman
 
         - name: Run system tests with Newman
-          run: newman run src/test/newman/api_tests.postman_collection.json
+          run: newman run ${{ github.workspace }}/src/test/newman/api_tests.postman_collection.json
