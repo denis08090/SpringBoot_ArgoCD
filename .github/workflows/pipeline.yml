@@ -91,7 +91,9 @@ jobs:
         run: ls -R "./src/test/newman/"
 
       - name: Run system tests with Newman
-        run: newman run ${{ github.workspace }}/src/test/newman/api_tests.postman_collection.json
+        run: newman run api_tests.postman_collection.json
+        working-directory: ${{ github.workspace }}/src/test/newman
+
 
 
   create_pull_request:
@@ -151,18 +153,3 @@ jobs:
             fi
           shell: /usr/bin/bash -e {0}
 
-  system-tests:
-    runs-on: ubuntu-latest
-    needs:  deploy-to-production
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install Newman
-        run: npm install -g newman
-
-      - name: List files in the Newman directory to confirm location
-        run: ls -R "./src/test/newman/"
-
-      - name: Run system tests with Newman
-        run: newman run ./src/test/newman/api_tests.postman_collection.json
