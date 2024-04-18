@@ -71,25 +71,18 @@ jobs:
           git commit --allow-empty -m "Deploy ${{ env.PROJECT_VERSION }} to staging"
           git push
 
-      - name: Wait for ArgoCD deployment
-        run: |
-          # Add commands to check the status of ArgoCD deployment here
-          # You may use ArgoCD CLI or API to check the deployment status
-          # Example:
-          # argocd app wait <APP_NAME> --timeout 300
+  run-newman-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Install Newman
         run: npm install -g newman
 
-      - name: List files in the Newman directory to confirm location
-        run: ls -R "./src/test/newman/"
-
       - name: Run system tests with Newman
         run: newman run api_tests.postman_collection.json
-        working-directory: ./src/test/newman
-
-
-
+        working-directory: /test/newman/
 
   create_pull_request:
       runs-on: ubuntu-latest
