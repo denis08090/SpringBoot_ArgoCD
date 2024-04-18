@@ -92,7 +92,8 @@ jobs:
 
       - name: Run system tests with Newman
         run: newman run api_tests.postman_collection.json
-        working-directory: ${{ github.workspace }}/src/test/newman
+        working-directory: ./src/test/newman
+
 
 
 
