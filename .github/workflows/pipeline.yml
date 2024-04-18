@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -31,7 +31,7 @@ jobs:
     needs: run-unit-and-integration-tests
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up JDK
         uses: actions/setup-java@v1
@@ -54,7 +54,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Checkout GitOps repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           repository: ${{ github.actor }}/ArgoCD_GitOps
           token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
@@ -82,7 +82,7 @@ jobs:
       - name: Run system tests
         run: |
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Newman
         run: npm install -g newman
@@ -98,7 +98,8 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+      
 
       - name: Commit changes
         run: |
@@ -123,7 +124,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - name: Checkout GitOps repository
-          uses: actions/checkout@v4
+          uses: actions/checkout@v3
           with:
             repository: ${{ github.actor }}/ArgoCD_GitOps
             token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
@@ -155,7 +156,7 @@ jobs:
     needs:  deploy-to-production
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Newman
         run: npm install -g newman
