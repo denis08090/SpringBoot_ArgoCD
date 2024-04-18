@@ -84,6 +84,28 @@ jobs:
         run: newman run api_tests.postman_collection.json
         working-directory: /test/newman/
 
+  run-newman:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v2
+
+          - name: Set up Node.js
+            uses: actions/setup-node@v2
+            with:
+              node-version: '14'
+
+          - name: Install Newman
+            run: npm install -g newman
+
+          - name: Create directory if not exists
+            run: mkdir -p ${{ github.workspace }}/src/test/newman/
+
+          - name: Run Newman tests
+            run: newman run api_tests.postman_collection.json
+            working-directory: ${{ github.workspace }}/src/test/newman/
+
   create_pull_request:
       runs-on: ubuntu-latest
       steps:
