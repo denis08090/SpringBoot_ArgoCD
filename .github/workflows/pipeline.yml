@@ -145,5 +145,6 @@ jobs:
 
         - name: Install Newman
           run: npm install -g newman
-        - name: Run system tests
-          run: newman run tests/system/your-collection-file.json
+
+        - name: Run system tests with Newman
+          run: newman run src/test/newman/api_tests.postman_collection.json
