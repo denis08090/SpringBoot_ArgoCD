@@ -143,3 +143,7 @@ jobs:
             fi
           shell: /usr/bin/bash -e {0}
 
+        - name: Install Newman
+          run: npm install -g newman
+        - name: Run system tests
+          run: newman run tests/system/your-collection-file.json
