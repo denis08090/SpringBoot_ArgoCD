@@ -1,9 +1,41 @@
 name: Pipeline
 
-on: [push, pull_request]
-
-
+on:
+  push:
+    branches:
+      - main
 jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Print current directory
+        run: pwd
+
+      - name: List files in current directory
+        run: ls -la
+
+      - name: Setup Node.js and install dependencies (if needed)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+        run: npm install
+
+      - name: Run command in the current directory
+        run: echo "Running command in the correct directory"
+        # If you need to change the directory:
+        working-directory: ${{ github.workspace }}  # Explicitly set to the default working directory
+
+      - name: Another Task
+        run: |
+          echo "Performing tasks in the correct directory"
+        working-directory: ./path/to/your/directory # Change to specific subdirectory if needed
+
+
+
   run-unit-and-integration-tests:
     runs-on: ubuntu-latest
     steps:
