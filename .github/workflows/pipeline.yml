@@ -2,6 +2,7 @@ name: Pipeline
 
 on: [push, pull_request]
 
+
 jobs:
   run-unit-and-integration-tests:
     runs-on: ubuntu-latest
@@ -13,7 +14,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
-          distribution: 'temurin'
+          distribution: 'adopt'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -32,18 +33,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v1
         with:
-          java-version: '21'
-          distribution: 'murine'
-          java-package: jdk
-          check-latest: false
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          overwrite-settings: true
-          job-status: success
-          token: ${{ secrets.GITHUB_TOKEN }}
+          java-version: 21
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -91,14 +83,14 @@ jobs:
 
       - name: Run system tests with Newman
         run: newman run api_tests.postman_collection.json
-
+  
 
   create_pull_request:
-    runs-on: ubuntu-latest
-    needs: deploy-to-staging-and-run-further-tests  # Ensure it runs after deployment
-    steps:
+      runs-on: ubuntu-latest
+      steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
 
       - name: Commit changes
         run: |
@@ -122,26 +114,31 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout GitOps repository
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ github.actor }}/ArgoCD_GitOps
-          token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
-          ref: main
+        - name: Checkout GitOps repository
+          uses: actions/checkout@v3
+          with:
+            repository: ${{ github.actor }}/ArgoCD_GitOps
+            token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
+            ref: main
 
-      - name: Create a new branch for PR
-        run: |
-          git checkout -b update-production-${{ github.run_number }}
+        - name: Create a new branch for PR
+          run: |
+            git checkout -b update-production-${{ github.run_number }}
 
-      - name: Update image tag with version from staging in production values.yml
-        run: |
-          version=$(grep 'tag:' values_staging.yml | awk '{print $2}')
-          sed -i "s/tag: .*/tag: $version/" values_production.yml
-          git config --global user.email "denis.roos@wiss-edu.ch"
-          git config --global user.name "denis08090"
-          git add values_production.yml
-          git commit --allow-empty -m "Update production image to $version"
-          git push origin update-production-${{ github.run_number }}
-        shell: /usr/bin/bash -e {0}
-
+        - name: Update image tag with version from staging in production values.yml
+          run: |
+            version=$(grep 'tag:' values_staging.yml | awk '{print $2}')
+            sed -i "s/tag: .*/tag: $version/" values_production.yml
+            git config --global user.email "denis.roos@wiss-edu.ch"  # Replace with your email
+            git config --global user.name "denis08090"  # Replace with your name
+            git add values_production.yml
+            
+            # Check if there are changes to commit
+            if git diff --cached --exit-code; then
+              echo "No changes to commit."
+            else
+              git commit -m "Update production image to $version"
+              git push origin update-production-${{ github.run_number }}
+            fi
+          shell: /usr/bin/bash -e {0
 
